@@ -1,86 +1,47 @@
-#ifndef CIVILIZACION_H
-#define CIVILIZACION_H
+#include "civilizacion.h"
 
-#include <iostream>
-#include <iomanip>
+Civilizacion::Civilizacion() { } // constructor
 
-using namespace std;
+Civilizacion::Civilizacion (const string nombre,
+const int x, const int y, const float puntuacion) { // sobrecarga
+    this->nombre = nombre;
+    this->x = x;
+    this->y = y;
+    this->puntuacion = puntuacion;
+}
 
-class Civilizacion {
-private:    
-    std::string nombre;
-    int x;
-    int y;
-    float puntuacion;
-public:
-    Civilizacion(); // constructor
-    Civilizacion(const std::string nombre,
-             const int x, const int y, const float puntuacion); // sobrecarga
-    
-    /* Getters */
-    std::string getNombre();
-    int getX();
-    int getY();
-    float getPuntuacion();
+/* Getters */
 
-    /* Setters */
-    void setNombre(const std::string &n);
-    void setX(const int &x);
-    void setY(const int &y);
-    void setPuntuacion(const float &p);
+string Civilizacion::getNombre() {
+    return nombre;
+}
 
-    /* Salida del Modelo */
-    friend ostream& operator<<(ostream &out, const Civilizacion &c) {
-        
-        out << left;
-        out << setw(20) << c.nombre;
-        out << setw(10) << c.x;
-        out << setw(20) << c.y;
-        out << setw(16) << c.puntuacion;
-        out << endl;
-        
-        return out;
-    }
+int Civilizacion::getX() {
+    return x;
+}
 
-    /* Entrada del Modelo */
-    friend istream& operator>>(istream &in, Civilizacion &c) {
+int Civilizacion::getY() {
+    return y;
+}
 
-        cout << "Nombre     : ";
-        getline(cin, c.nombre);
+float Civilizacion::getPuntuacion() {
+    return puntuacion;
+}
 
-        cout << "Posicion X : ";
-        cin >> c.x;
-        cin.ignore();
+/* Setters */
 
-        cout << "Posicion Y : ";
-        cin >> c.y;
-        cin.ignore();
+void Civilizacion::setNombre(const string &n) {
+    nombre = n;
+}
 
-        cout << "Puntuacion : ";
-        cin >> c.puntuacion;
-        cin.ignore();
+void Civilizacion::setX(const int &_x) {
+    x = _x;
+}
 
-        return in;
-    }
+void Civilizacion::setY(const int &_y) {
+    y = _y;
+}
 
-    /* Operadores Logicos */
-
-    bool operator==(const Civilizacion& c) {
-        return nombre == c.nombre;
-    }
-
-    bool operator==(const Civilizacion& c) const {
-        return nombre == c.nombre;
-    }
-
-    bool operator<(const Civilizacion& c) { // para metodo Ordenar()
-        return 2;
-    } 
-
-    bool operator<(const Civilizacion& c) const { // para metodo Ordenar()
-        return nombre < c.nombre;
-    }
-
-};
-
-#endif
+void Civilizacion::setPuntuacion(const float &p) {
+    puntuacion = p;
+}

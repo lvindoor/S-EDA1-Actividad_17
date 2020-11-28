@@ -24,15 +24,15 @@ public:
     Civilizacion front();
     Civilizacion back();
     void inicializar(const Civilizacion &c, size_t n);
-    void eliminar(size_t pos);
-    
+    void eliminar(const Civilizacion&);
+
     /* Ordenamientos */
 
-    void ordenarNombre(); 
+    void ordenarNombre();
     void ordenarX();
     void ordenarY();
     void ordenarPuntuacion();
-    
+
     Civilizacion* buscar(const Civilizacion &c);
 
     friend Videogame& operator<<(Videogame &v, const Civilizacion &c)

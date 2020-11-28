@@ -2,7 +2,7 @@
 
 Civilizacion::Civilizacion() { } // constructor
 
-Civilizacion::Civilizacion (const string nombre, 
+Civilizacion::Civilizacion (const string nombre,
 const int x, const int y, const float puntuacion) { // sobrecarga
     this->nombre = nombre;
     this->x = x;

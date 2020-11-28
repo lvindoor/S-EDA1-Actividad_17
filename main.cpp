@@ -3,6 +3,12 @@
 
 using namespace std;
 
+#ifdef _WIN32
+#define CLEAN_SCREEN "cls"
+#else
+#define CLEAN_SCREEN "clear"
+#endif // _WIN32
+
 /* Opciones Menu */
 enum {
     NOMBRE_USUARIO = 1,
@@ -21,23 +27,33 @@ enum {
     SALIR
 };
 
-/* Opciones Sub-Menu */
+/* Opciones Sub-Menu -> Ordenar */
 
 enum {
     ORDENAR_NOMBRE = 1,
     ORDENAR_X,
     ORDENAR_Y,
     ORDENAR_PUNTUACION,
-    REGRESAR
+    ORDENAR_REGRESAR
+};
+
+/* Opciones Sub-Menu -> Modificar */
+
+enum {
+    MODIFICAR_NOMBRE = 1,
+    MODIFICAR_X,
+    MODIFICAR_Y,
+    MODIFICAR_PUNTUACION,
+    MODIFICAR_REGRESAR
 };
 
 int main() {
 
     Videogame v;
-    
+
     int opc; // creamos una opcion para el menu
     Civilizacion c; // creamos una variable civilización temporal
-    size_t p; // declaramos una variable de tipo posición
+    string nombreUsuario; // variable para nombre de usuario -> civilizacion
     bool continueProgram = true; // comenzamos el menu ciclico
 
     do {
@@ -57,32 +73,58 @@ int main() {
         cout << "\t9-. Buscar" << endl;
         cout << "\t10-. Modificar" << endl;
         cout << "\t11-. Resumen" << endl;
-        cout << "\t12-. Respaldar - Extra" << endl;
-        cout << "\t13-. Recuperar - Extra" << endl;        
+        cout << "\t12-. Respaldar -> Extra" << endl;
+        cout << "\t13-. Recuperar -> Extra" << endl;
         cout << "\t14-. Salir" << endl;
         cout << endl << "\topcion : ";
         cin >> opc; cin.ignore();
-        cout << endl;
-        
+
+        if(opc!=SALIR) {
+            cout << endl << "\tPresione entrar para continuar ..." << endl;
+            cin.get();
+            system(CLEAN_SCREEN);
+            cout << endl << endl;
+        }
+
         /* Evaluamos */
         switch(opc) {
 
         case NOMBRE_USUARIO: {
-            string temp; // variable temporal para nombre
-            cout << "Ingrese el nombre de usuario : ";
-            cin >> temp; // guardamos
-            
-            c.setNombre(temp); // agregamos a la actual civilización
-            cin.ignore();
-            break;
+            cout << "\tIngrese el nombre de usuario : ";
+            getline(cin,nombreUsuario); // guardamos
+            c.setNombre(nombreUsuario); // agregamos a la actual civilización
+
         }
+        break;
 
-        case AGREGAR:
-            cin >> c; // pedimos datos y guardamos
+        case AGREGAR: {
 
-            v.agregarCivilizacion(c); // agregamos al arreglo
-            cin.ignore();
-            break;
+            if(nombreUsuario == "") { // no se ha agregado nombre de usuario
+                cin >> c; // pedimos datos y guardamos
+                v.agregarCivilizacion(c); // agregamos al arreglo
+            } else { // ya hay un nombre usuario
+                /* Variables temporales */
+                int tempInt;
+                float tempFloat;
+                /* Pedimos datos faltantes */
+                cout << "\tPosicion X : ";
+                cin >> tempInt;
+                c.setX(tempInt);
+                cin.ignore();
+                cout << "\tPosicion Y : ";
+                cin >> tempInt;
+                c.setY(tempInt);
+                cin.ignore();
+                cout << "\tPuntuacion : ";
+                cin >> tempFloat;
+                c.setPuntuacion(tempFloat);
+                cin.ignore();
+                v.agregarCivilizacion(c); // agregamos al arreglo
+                nombreUsuario = ""; // limpiamos el nombre de usuario
+            }
+
+        }
+        break;
 
         case INSERTAR:
             size_t p; // creamos una variable posición
@@ -94,17 +136,17 @@ int main() {
 
             if (p >= v.size()) { // ¿Posición valida?
                 cout << "\tposicion no valida" << endl;
-            } else { 
+            } else {
                 v.insertar(c,p); // insertamos en p
             }
             break;
-        
+
         case INICIALIZAR:
             size_t n; // creamos una variable de tamaño
 
             cout << "\tDimension de vector : ";
             cin >> n; cin.ignore(); // guardamos el nuevo tamaño
-            cout << "  Inicializar con : " << endl;
+            cout << endl << "\t  Inicializando con ... " << endl << endl;
             cin >> c; // guardamos la cadena a inicializar
             cout << endl;
 
@@ -114,7 +156,7 @@ int main() {
         case PRIMERA:
             cout << "\tLa primera civilizacion es: " << endl;
             if(v.size()>0) {
-                cout << v.front(); // traemos la primera civilizacion
+                cout << "\t" << v.front(); // traemos la primera civilizacion
             } else {
                 cout << "\tNo hay civilizaciones" << endl;
             }
@@ -123,15 +165,16 @@ int main() {
         case ULTIMA:
             cout << "\tLa ultima civilizacion es: " << endl;
             if(v.size()>0) {
-                cout << v.back(); // traemos la ultima civilizacion
+                cout  << "\t" << v.back(); // traemos la ultima civilizacion
             } else {
                 cout << "\tNo hay civilizaciones" << endl;
             }
             break;
 
-        case ORDENAR:
-            int opc2; // creamos una opcion para el submenu
-            bool continueProgram2 = true; // comenzamos el submenu ciclico
+        case ORDENAR: {
+
+            int opc; // creamos una opcion para el submenu
+            bool continueProgram = true; // comenzamos el submenu ciclico
 
             do {
 
@@ -142,14 +185,14 @@ int main() {
                 cout << "\t1-. Nombre Usuario " << endl;
                 cout << "\t2-. Posicion en X" << endl;
                 cout << "\t3-. Posicion en Y" << endl;
-                cout << "\t4-. Puntuacion" << endl;        
+                cout << "\t4-. Puntuacion" << endl;
                 cout << "\t5-. Regresar" << endl;
                 cout << endl << "\topcion : ";
-                cin >> opc2; cin.ignore();
+                cin >> opc; cin.ignore();
                 cout << endl;
-                
+
                 /* Evaluamos */
-                switch(opc2) { 
+                switch(opc) {
                     case ORDENAR_NOMBRE:
                         v.ordenarNombre();
                         break;
@@ -162,30 +205,52 @@ int main() {
                     case ORDENAR_PUNTUACION:
                         v.ordenarPuntuacion();
                         break;
-                    case REGRESAR:
-                        continueProgram2 = false;
+                    case ORDENAR_REGRESAR:
+                        continueProgram = false;
                         break;
                     default:
                         cout << "\tOpcion Invalida" << endl;
                         break;
                 }
-            } while(continueProgram2);
 
-            break;
+                cout << endl << "\tDesea seguir modificando (S/N) : ";
+                if(cin.get() != 'S') {
+                    continueProgram = false;
+                }
 
-        case ELIMINAR:
-            cout << "\tPosicion para eliminar : ";
-            cin >> p; cin.ignore();
+                if(continueProgram) {
+                    cout << endl << "\tPresione entrar para continuar ..." << endl;
+                    cin.get();
+                    system(CLEAN_SCREEN);
+                    cout << endl << endl;
+                }
+            } while(continueProgram);
+        }
+        break;
 
-            if (p >= v.size()) { // ¿Posición valida?
-                cout << "\tposicion no valida" << endl;
+        case ELIMINAR: {
+
+            cout << "\tEscriba el nombre de la civilizacion a borrar..." << endl << endl;
+            cout << "\tNombre : ";
+            getline(cin,nombreUsuario); // pedimos la civilizacion
+            c.setNombre(nombreUsuario); // agregamos al modelo
+            cout << endl;
+
+            Civilizacion *ptr = v.buscar(c); // buscamos
+
+            if(ptr==nullptr) {
+                cout << "\tNo encontrado" << endl;
             } else {
-                v.eliminar(p); // eliminamos en p
+                v.eliminar(*ptr); // eliminamos en p
             }
-            break;
+        }
+        break;
 
         case BUSCAR: {
-                cin >> c; // pedimos la civilizacion
+                cout << "\tEscriba el nombre de la civilizacion a buscar..." << endl << endl;
+                cout << "\tNombre : ";
+                getline(cin,nombreUsuario); // pedimos la civilizacion
+                c.setNombre(nombreUsuario); // agregamos al modelo
                 cout << endl;
 
                 Civilizacion *ptr = v.buscar(c); // buscamos
@@ -198,66 +263,89 @@ int main() {
             }
             break;
 
-        case MODIFICAR:
-            /* Buscamos */
-            cin >> c; // pedimos la civilizacion
+        case MODIFICAR: {
+
+            int opc; // creamos una opcion para el submenu
+            bool continueProgram = true; // comenzamos el submenu ciclico
+
+            do {
+
                 cout << endl;
+                cout << "\t--------------------------------------------" << endl;
+                cout << "\t                   MODIFICAR               " << endl;
+                cout << "\t--------------------------------------------" << endl << endl;
+                cout << "\tEscriba el nombre de la civilizacion a buscar. " << endl << endl;
 
-                Civilizacion *ptr = v.buscar(c); // buscamos
+                cout << "\tNombre : ";
+                getline(cin,nombreUsuario); // pedimos la civilizacion
+                c.setNombre(nombreUsuario); // agregamos al modelo
 
-                if(ptr==nullptr) {
+                Civilizacion *ptr = v.buscar(c); // hacemos una busqueda
+
+                if(ptr == nullptr) {
                     cout << "\tNo encontrado" << endl;
                 } else {
-                    cout << "\t" << *ptr << endl << endl;
+                    cout << "\t" << *ptr << endl << endl; // imprimimos el lo que tiene el puntero
+                    /* Variables temporales */
+                    string tempString;
+                    int tempInt;
+                    float tempFloat;
 
-                    int subMenu;
-                    string nombre;
-                    int xy;
-                    float puntuacion;
-
-                    cout << "Que deseas modificar?" << endl;
-                    cout << "1.- Nombre           " << endl;
-                    cout << "2.- Ubicacion en X   " << endl;
-                    cout << "3.- Ubicacion en Y   " << endl;
-                    cout << "4.- Puntuacion       " << endl;
-                    cout << "5.- Nada             " << endl; 
-                    cin >> subMenu;
+                    cout << "\tEscoga el campo a Modificar" << endl << endl;
+                    cout << "\t1.- Nombre" << endl;
+                    cout << "\t2.- Ubicacion en X" << endl;
+                    cout << "\t3.- Ubicacion en Y" << endl;
+                    cout << "\t4.- Puntuacion" << endl;
+                    cout << "\t5.- Regresar" << endl << endl;
+                    cout << "\tOpcion : ";
+                    cin >> opc;
+                    cout << endl;
                     cin.ignore();
 
-                    if(subMenu == 1){
-                        cout << "Nombre: ";
-                        getline(cin, nombre);
-                        ptr->setNombre(nombre);
+                    switch(opc) {
+                        case MODIFICAR_NOMBRE:
+                            cout << "\tNombre : ";
+                            getline(cin, tempString);
+                            ptr->setNombre(tempString);
+                            break;
+                        case MODIFICAR_X:
+                            cout << "\tUbicacion en x : ";
+                            cin >> tempInt;
+                            ptr->setX(tempInt);
+                            break;
+                        case MODIFICAR_Y:
+                            cout << "\tUbicacion en y : ";
+                            cin >> tempInt;
+                            ptr->setX(tempInt);
+                            break;
+                        case MODIFICAR_PUNTUACION:
+                            cout << "\tPuntuacion : ";
+                            cin >> tempFloat;
+                            ptr->setPuntuacion(tempFloat);
+                            break;
+                        case MODIFICAR_REGRESAR:
+                            continueProgram = false;
+                            break;
+                        default:
+                            cout << "\tNo existe tal opcion" << endl;
+                            cin.ignore();
                     }
 
-                    else if(subMenu == 2){
-                        cout << "Ubicacion en X: ";
-                        cin >> xy;
-                        ptr->setX(xy);
+                    cout << endl << "\tDesea seguir modificando (S/N) : ";
+                    if(cin.get() != 'S') {
+                        continueProgram = false;
                     }
 
-                    else if(subMenu == 3){
-                        cout << "Ubicacion en Y: ";
-                        cin >> xy;
-                        ptr->setY(xy);
+                    if(continueProgram) {
+                        cout << endl << "\tPresione entrar para continuar ..." << endl;
+                        cin.get();
+                        system(CLEAN_SCREEN);
+                        cout << endl << endl;
                     }
-
-                    else if(subMenu == 4){
-                        cout << "Puntuacion: ";
-                        cin >> puntuacion;
-                        ptr->setPuntuacion(puntuacion);
-                    }
-
-                    else if(subMenu == 5){
-                        cout << "Volviendo al menu..." << endl;
-                    }
-
-                    else {
-                        cout << "No existe tal opcion" << endl;
-                    }
-                    cin.ignore();
                 }
-            break;
+            } while(continueProgram);
+        }
+        break;
 
         case MOSTRAR:
             v.mostrar(); // mostramos
@@ -271,16 +359,22 @@ int main() {
             v.recuperar(); // recuperamos
             break;
 
-        case SALIR: 
+        case SALIR:
             continueProgram = false; // cerramos ciclo
             break;
 
-        default: 
+        default:
             cout << "\tOpcion Invalida" << endl;
             break;
         }
-        
+
+        if(opc!=SALIR) {
+            cout << endl << "\tPresione entrar para continuar ..." << endl;
+            cin.get();
+            system(CLEAN_SCREEN);
+        }
+
     } while (continueProgram);
-    
+
     return 0;
 }

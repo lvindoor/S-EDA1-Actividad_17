@@ -9,30 +9,30 @@ void Videogame::agregarCivilizacion(const Civilizacion &c) { // sobrecarga
 }
 
 void Videogame::mostrar() {
-    
+
     cout << left;
-    cout << setw(10) << "Nombre";
-    cout << setw(10) << "Posicion X";
-    cout << setw(8) << "Posicion Y";
-    cout << setw(6) << "Puntuacion";
+    cout << setw(20) << "\tNombre ";
+    cout << setw(11) << "Posicion X";
+    cout << setw(20) << "Posicion Y";
+    cout << "Puntuacion";
     cout << endl;
-    
+
     /* Imprimimos la clase */
     for (size_t i = 0; i < civilizaciones.size(); i++) {
         Civilizacion &c = civilizaciones[i];
-        cout << c;
+        cout << "\t" << c;
     }
 }
 
 void Videogame::respaldar_tabla() {
-    
+
     ofstream archivo("civilizaciones_tabla.txt");
     if (archivo.is_open()) {
         archivo << left;
-        archivo << setw(10) << "Nombre";
-        archivo << setw(10) << "Posicion X";
-        archivo << setw(8) << "Posicion Y";
-        archivo << setw(6) << "Puntuacion";
+        archivo << setw(20) << "\tNombre";
+        archivo << setw(11) << "Posicion X";
+        archivo << setw(20) << "Posicion Y";
+        archivo << "Puntuacion";
         archivo << endl;
         for (size_t i = 0; i < civilizaciones.size(); i++) {
             Civilizacion &c = civilizaciones[i];
@@ -42,7 +42,7 @@ void Videogame::respaldar_tabla() {
     archivo.close();
 }
 void Videogame::respaldar() {
-    
+
     ofstream archivo("civilizaciones.txt");
     if (archivo.is_open()) {
         for (size_t i = 0; i < civilizaciones.size(); i++) {
@@ -57,7 +57,7 @@ void Videogame::respaldar() {
 }
 
 void Videogame::recuperar() {
-    
+
     ifstream archivo("civilizaciones.txt");
     if (archivo.is_open()) {
         string temp;
@@ -87,9 +87,9 @@ void Videogame::recuperar() {
             puntuacion = stof(temp);  // string-to-float
             c.setPuntuacion(puntuacion);
 
-            agregarCivilizacion(c);            
+            agregarCivilizacion(c);
         }
-        
+
     }
     archivo.close();
 }
@@ -114,8 +114,8 @@ void Videogame::inicializar(const Civilizacion &c, size_t n) {
     civilizaciones = vector<Civilizacion>(n, c);
 }
 
-void Videogame::eliminar(size_t pos) {
-    civilizaciones.erase(civilizaciones.begin()+pos);
+void Videogame::eliminar(const Civilizacion &c) {
+    civilizaciones.erase(std::remove(civilizaciones.begin(), civilizaciones.end(), c), civilizaciones.end());
 }
 
 void Videogame::ordenarNombre() {
@@ -124,8 +124,8 @@ void Videogame::ordenarNombre() {
 
 void Videogame::ordenarX() {
     /* Ordenar = funcion lambda + atributo a ordenar */
-    sort(civilizaciones.begin(), civilizaciones.end(), 
-    [](Civilizacion c1, Civilizacion c2){return c1.getX() < c2.getX();}); 
+    sort(civilizaciones.begin(), civilizaciones.end(),
+    [](Civilizacion c1, Civilizacion c2){return c1.getX() < c2.getX();});
 }
 
 void Videogame::ordenarY() {
