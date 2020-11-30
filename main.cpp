@@ -22,8 +22,6 @@ enum {
     BUSCAR,
     MODIFICAR,
     MOSTRAR,
-    RESPALDAR,
-    RECUPERAR,
     SALIR
 };
 
@@ -73,9 +71,7 @@ int main() {
         cout << "\t9-. Buscar" << endl;
         cout << "\t10-. Modificar" << endl;
         cout << "\t11-. Resumen" << endl;
-        cout << "\t12-. Respaldar -> Extra" << endl;
-        cout << "\t13-. Recuperar -> Extra" << endl;
-        cout << "\t14-. Salir" << endl;
+        cout << "\t12-. Salir" << endl;
         cout << endl << "\topcion : ";
         cin >> opc; cin.ignore();
 
@@ -349,14 +345,6 @@ int main() {
 
         case MOSTRAR:
             v.mostrar(); // mostramos
-            break;
-
-        case RESPALDAR:
-            v.respaldar(); // respaldamos
-            break;
-
-        case RECUPERAR:
-            v.recuperar(); // recuperamos
             break;
 
         case SALIR:
