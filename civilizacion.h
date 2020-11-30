@@ -9,8 +9,7 @@ using namespace std;
 class Civilizacion {
 private:
     std::string nombre;
-    int x;
-    int y;
+    int x,y;
     float puntuacion;
 public:
     Civilizacion(); // constructor
